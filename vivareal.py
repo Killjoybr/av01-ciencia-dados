@@ -186,7 +186,7 @@ def raspar_vivareal_edge(limite_imoveis=100):
 
     if todos_imoveis:
         df = pd.DataFrame(todos_imoveis)
-        nome_arquivo = 'imoveis_sobradinho_edge.csv'
+        nome_arquivo = 'imoveis_sobradinho.csv'
         df.to_csv(nome_arquivo, index=False, encoding='utf-8-sig')
         print(f"\nSucesso! {len(todos_imoveis)} imóveis salvos no arquivo '{nome_arquivo}'.")
     else:
