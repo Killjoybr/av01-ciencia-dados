@@ -3,12 +3,10 @@ import random
 import re
 import pandas as pd
 from selenium import webdriver
-from selenium.webdriver.edge.service import Service
 from selenium.webdriver.edge.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from webdriver_manager.microsoft import EdgeChromiumDriverManager
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 
 def limpar_texto(texto):
@@ -32,8 +30,7 @@ def raspar_vivareal_edge(limite_imoveis=100):
     options.add_experimental_option('useAutomationExtension', False)
     options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0")
     
-    servico = Service(EdgeChromiumDriverManager().install())
-    driver = webdriver.Edge(service=servico, options=options)
+    driver = webdriver.Edge(options=options)
     
     # Executa script CDP para remover a propriedade webdriver do navegador
     driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
@@ -133,7 +130,7 @@ def raspar_vivareal_edge(limite_imoveis=100):
                     endereco_elem = card.find_element(By.CSS_SELECTOR, '[data-cy="rp-cardProperty-location-txt"]')
                     imovel['bairro'] = limpar_texto(endereco_elem.text)
                     endereco_elem = card.find_element(By.CSS_SELECTOR, '[data-cy="rp-cardProperty-street-txt"]')
-                    imovel['bairro'] = imovel['bairro']+limpar_texto(endereco_elem.text)
+                    imovel['bairro'] = imovel['bairro']+f' {limpar_texto(endereco_elem.text)}'
                 except NoSuchElementException:
                     imovel['bairro'] = None
 
@@ -161,27 +158,21 @@ def raspar_vivareal_edge(limite_imoveis=100):
             if len(todos_imoveis) >= limite_imoveis:
                 break
 
-            # --- NOVA LÓGICA DE NAVEGAÇÃO VIA CLIQUE ---
             try:
-                # Localiza o botão usando o aria-label fornecido no HTML
                 btn_proxima = driver.find_element(By.CSS_SELECTOR, "a[aria-label='próxima página']")
                 
-                # Verifica se o botão está desabilitado (última página)
                 if btn_proxima.get_attribute("aria-disabled") == "true":
                     print("Chegamos na última página disponível.")
                     break
                 
-                # Centraliza o botão na tela
                 driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", btn_proxima)
                 time.sleep(random.uniform(0.5, 1.5))
                 
-                # Clica usando JavaScript para não ser bloqueado por pop-ups ou banners de cookies sobrepostos
                 driver.execute_script("arguments[0].click();", btn_proxima)
                 print("Navegando via clique no botão 'próxima página'...")
                 
                 pagina += 1
                 
-                # Pausa para permitir que a nova página seja carregada
                 time.sleep(random.uniform(4.0, 6.0))
                 
             except NoSuchElementException:
