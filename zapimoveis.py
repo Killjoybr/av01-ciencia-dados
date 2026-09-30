@@ -23,6 +23,7 @@ def extrair_numero(texto):
 def raspar_vivareal_edge(limite_imoveis=100):
     options = Options()
     options.add_argument("--window-size=1920,1080")
+    # options.add_argument("--headless")
     
     # Estratégias Anti-Bloqueio (Evasão de Bot)
     options.add_argument("--disable-blink-features=AutomationControlled")
@@ -135,7 +136,7 @@ def raspar_vivareal_edge(limite_imoveis=100):
                     imovel['bairro'] = None
 
                 try:
-                    titulo_elem = card.find_element(By.CSS_SELECTOR, "block overflow-hidden text-ellipsis whitespace-nowrap typo-caption text-neutral-100")
+                    titulo_elem = card.find_element(By.CSS_SELECTOR, "h2.block.overflow-hidden.text-ellipsis.whitespace-nowrap.typo-caption.text-neutral-100")
                     titulo_texto = limpar_texto(titulo_elem.text).lower()
                     
                     if 'apartamento' in titulo_texto:
