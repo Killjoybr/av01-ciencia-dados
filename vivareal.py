@@ -135,7 +135,7 @@ def raspar_vivareal_edge(limite_imoveis=100):
                     imovel['bairro'] = None
 
                 try:
-                    titulo_elem = card.find_element(By.CSS_SELECTOR, "block overflow-hidden text-ellipsis whitespace-nowrap typo-caption text-neutral-100")
+                    titulo_elem = card.find_element(By.CSS_SELECTOR, "h2.block.overflow-hidden.text-ellipsis.whitespace-nowrap.typo-caption.text-neutral-100")
                     titulo_texto = limpar_texto(titulo_elem.text).lower()
                     
                     if 'apartamento' in titulo_texto:
